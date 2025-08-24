@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MusiKapwa 2025: Tanghalan ng Kahusayan, Tatak ng Kadakilaan</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- We are importing "Cinzel", which closely matches your logo's style -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <div id="login-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h2>Moderator Login</h2>
+            <p>Please select your booth and enter your name to begin.</p>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="booth-select">Booth Location:</label>
+                    <select id="booth-select" required>
+                        <option value="" disabled selected>-- Select a Booth --</option>
+                        <option value="AO">Accounting Office (AO)</option>
+                        <option value="PB">Primary Building (PB)</option>
+                        <option value="GYM">RSA Gym (GYM)</option>
+                        <option value="JHS">JHS Canteen (JHS)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="name-input">Your Name:</label>
+                    <input type="text" id="name-input" placeholder="e.g., Juan Dela Cruz" required>
+                </div>
+                <button type="submit" class="login-btn">Start Session</button>
+            </form>
+        </div>
+    </div>
+
+    <main id="app-container" class="hidden">
+        <div class="booking-container">
+            <!-- Main page title -->
+            <img class="main-logo" src="assets/musikapwa-title.png" alt="MusiKapwa Official Title Logo">
+
+            <!-- The legend explains the meaning of different seat colors and states -->
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="seat vip"></div>
+                    <span>VIP/Sponsors</span>
+                </div>
+                <div class="legend-item">
+                    <div class="seat ginto"></div>
+                    <span>Ginto</span>
+                </div>
+                <div class="legend-item">
+                    <div class="seat pilak"></div>
+                    <span>Pilak</span>
+                </div>
+                <div class="legend-item">
+                    <div class="seat tanso"></div>
+                    <span>Tanso</span>
+                </div>
+                <div class="legend-item">
+                    <div class="seat intermediate"></div>
+                    <span>Intermediate/Primary</span>
+                </div>
+                <div class="legend-item">
+                    <div class="seat selected"></div>
+                    <span>Selected</span>
+                </div>
+                <div class="legend-item">
+                    <div class="seat sold"></div>
+                    <span>Sold</span>
+                </div>
+            </div>
+
+            <!-- A simple visual representation of the stage -->
+            <div class="stage">STAGE</div>
+            
+            <div class="seating-chart">
+                <!-- Seats will be generated here by JavaScript -->
+            </div>
+
+            <!-- This section displays a summary of the current selection -->
+            <div class="summary">
+                <!-- The 'count' span will be updated by JavaScript to show the number of selected seats -->
+                <p>Ikaw ay bibili ng <span id="count">0</span> tiket.</p>
+                
+                <div id="selected-seats-container">
+                    <strong>Selected Seats:</strong>
+                    <!-- The JavaScript will update the text inside this span. -->
+                    <span id="selected-seats-list">None</span>
+                </div>
+                
+                <!-- The 'total' span will be updated by JavaScript to show the total price -->
+                <p>Total Price: Php<span id="total">0</span></p>
+
+                <!-- The button for the moderator to finalize the transaction -->
+                <button class="confirm-sale-btn">Confirm Sale</button>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/main.js" type="module"></script>
+
+</body>
+</html>

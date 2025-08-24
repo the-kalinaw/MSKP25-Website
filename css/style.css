@@ -1,0 +1,320 @@
+/* ======================================================
+   STYLE.CSS - TABLE OF CONTENTS
+   ======================================================
+   1. THEME & GLOBAL VARIABLES (:root)
+   2. GENERAL PAGE LAYOUT & UTILITIES
+   3. COMPONENT: LOGIN MODAL              
+   4. COMPONENT: STAGE
+   5. COMPONENT: LEGEND
+   6. COMPONENT: SEATING CHART
+   7. COMPONENT: SEAT
+   8. COMPONENT: SUMMARY & BUTTON
+   ====================================================== */
+
+
+/* ====================================================== */
+/* 1. THEME & GLOBAL VARIABLES (:root)                    */
+/* ====================================================== */
+:root {
+    --color-background: #241f18; /* A very dark, warm brown instead of pure black/blue */
+    --color-text: #f0e6d2;       /* A soft, parchment-like off-white */
+    --color-stage: #3b352a;      /* A muted, dark brown for the stage */
+    --color-seat-selected: #34d1bf; /* A vibrant teal for selection, provides good contrast */
+    --color-seat-sold: #950606;     /* A very dark grey/black for sold seats to make them recede */
+    --color-seat-ginto: #fdaa24;
+    --color-seat-pilak: #aaaaaa;
+    --color-seat-tanso: #6ab658;
+    --color-seat-vip: #ff5757;
+    --color-seat-kids: #ff69b4;
+}
+
+
+/* ====================================================== */
+/* 2. GENERAL PAGE LAYOUT & UTILITIES                     */
+/* ====================================================== */
+body {
+    background-color: var(--color-background);
+    color: var(--color-text);
+    font-family: 'Cinzel', serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 40px; /* Add some space at the top */
+    min-height: 100vh;
+    margin: 0;
+}
+.booking-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+/* A simple utility class to hide elements */
+.hidden {
+    display: none !important;
+}
+
+/* Styling for the main logo image */
+.main-logo {
+    /* YOUR ACTION: Adjust the max-width to change the logo size */
+    max-width: 50%; 
+    width: 90%; /* Ensures it's responsive on small screens */
+    height: auto; /* Maintains aspect ratio */
+    margin-bottom: 20px;
+}
+
+/* ====================================================== */
+/* 3. COMPONENT: LOGIN MODAL                              */
+/* ====================================================== */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.75);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000; /* Ensure it's on top of everything */
+}
+.modal-content {
+    background-color: #2c2b3a; /* A slightly lighter background */
+    padding: 30px 40px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+}
+.modal-content h2 {
+    margin-top: 0;
+}
+.form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #555;
+    background-color: #3d3d49;
+    color: var(--color-text);
+    font-size: 1rem;
+    box-sizing: border-box; /* Important for consistent sizing */
+}
+.login-btn {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    background-color: var(--color-seat-selected);
+    color: var(--color-background);
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.login-btn:hover {
+    background-color: #8efffd;
+}
+
+
+/* ====================================================== */
+/* 4. COMPONENT: STAGE                                    */
+/* ====================================================== */
+.stage {
+    background-color: var(--color-stage);
+    color: var(--color-text);
+    height: 50px;
+    width: 80%;
+    max-width: 600px;
+    margin: 10px 0 30px 0; /* Adjusted margin */
+    display: flex; /* Use flexbox for easy centering */
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: bold; /* Make text bolder */
+    letter-spacing: 4px;
+    border-radius: 15px; /* More pronounced rounding */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); /* A softer, darker shadow */
+    transform: none; /* Removed the 3D rotation for a flat, modern look */
+}
+
+
+/* ====================================================== */
+/* 5. COMPONENT: LEGEND                                   */
+/* ====================================================== */
+.legend {
+    display: flex;
+    justify-content: center;
+    gap: 20px; /* Space between items */
+    padding: 0;
+    background: transparent; /* No background */
+    margin-bottom: 30px;
+    list-style: none; /* Remove list styles if any */
+}
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Space between the color swatch and text */
+}
+.legend .seat {
+    width: 18px;
+    height: 18px;
+    margin: 0; /* Remove margin from legend swatches */
+    border-radius: 5px; /* Softly rounded corners */
+}
+/* Define the colors for the swatches. We add sold states too for clarity. */
+.legend .seat.selected { background-color: var(--color-seat-selected); }
+.legend .seat.sold { background-color: var(--color-seat-sold); }
+.legend .seat.ginto { background-color: var(--color-seat-ginto); }
+.legend .seat.pilak { background-color: var(--color-seat-pilak); }
+.legend .seat.tanso { background-color: var(--color-seat-tanso); }
+.legend .seat.vip { background-color: var(--color-seat-vip); }
+.legend .seat.intermediate { background-color: var(--color-seat-kids); }
+
+/* ====================================================== */
+/* 6. COMPONENT: SEATING CHART                            */
+/* ====================================================== */
+.seating-chart {
+    perspective: 1000px;
+    margin-bottom: 30px;
+    width: auto;
+    max-width: 95%;
+    overflow-x: auto; 
+    padding: 10px;
+}
+.seat-row {
+    display: flex;
+    justify-content: center;
+    min-width: max-content;
+}
+.spacer {
+    background-color: transparent;
+    border: none;
+    width: 25px;
+    height: 20px;
+    margin: 4px;
+    flex-shrink: 0;
+}
+
+
+/* ====================================================== */
+/* 7. COMPONENT: SEAT                                     */
+/* ====================================================== */
+.seat {
+    /* --- NEW SHAPE & SIZE --- */
+    width: 25px;
+    height: 20px;
+    margin: 4px;
+    border-radius: 8px; /* This creates the new rounded rectangle shape */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.4); /* Adds a subtle 3D lift */
+    
+    /* --- FONT & TEXT --- */
+    display: flex; /* Using flexbox for perfect text centering */
+    align-items: center;
+    justify-content: center;
+    font-size: 0.5rem;
+    font-weight: bold;
+    font-family: Verdana, sans-serif; /* Your choice for readability */
+    color: #000;
+    
+    /* --- OTHER PROPERTIES --- */
+    flex-shrink: 0;
+    transition: all 0.2s ease-out; /* Transition all properties for smoother effects */
+    user-select: none;
+}
+
+/* --- Seat States --- */
+.seat.available {
+    cursor: pointer;
+}
+.seat.available:hover {
+    transform: scale(1.1); /* Slightly smaller pop for a more subtle feel */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.5); /* Enhance shadow on hover */
+}
+.seat.sold {
+    background-color: var(--color-seat-sold);
+    color: var(--color-text);
+    cursor: not-allowed;
+    opacity: 0.8; 
+}
+
+/* --- Seat Category Colors (Available) --- */
+.seat.available.seat-vip { background-color: var(--color-seat-vip); }
+.seat.available.seat-ginto { background-color: var(--color-seat-ginto); }
+.seat.available.seat-pilak { background-color: var(--color-seat-pilak); }
+.seat.available.seat-tanso { background-color: var(--color-seat-tanso); }
+.seat.available.seat-intermediate { background-color: var(--color-seat-kids); }
+
+/* --- Selected State (Put here to override available state colors) --- */
+.seat.available.selected {
+    background-color: var(--color-seat-selected);
+    transform: scale(1.5);
+    box-shadow: 0 0 10px var(--color-seat-selected); /* Add a glow when selected */
+}
+
+/* --- Seat Category Colors (Sold Overrides) --- */
+/*.seat.sold.seat-intermediate { 
+    background-color: var(--color-seat-kids); 
+}
+/* You can add more overrides here if needed, e.g. .seat.sold.seat-vip */
+
+
+/* ====================================================== */
+/* 8. COMPONENT: SUMMARY & BUTTON                         */
+/* ====================================================== */
+.summary {
+    text-align: center;
+    margin-top: 30px;
+    background-color: var(--color-stage); /* Match the stage color for consistency */
+    padding: 20px 30px;
+    border-radius: 15px; /* Match the stage rounding */
+    width: 90%;
+    max-width: 700px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); /* Match the stage shadow */
+}
+.summary p {
+    margin: 10px 0;
+    font-size: 1.2rem; /* Slightly larger text */
+}
+.summary span {
+    font-weight: bold;
+    color: var(--color-seat-selected);
+}
+#selected-seats-container {
+    margin: 15px 0;
+    font-size: 1.1rem;
+    color: var(--color-text);
+}
+#selected-seats-list {
+    color: #f0e6d2; /* Match main text color */
+    font-weight: normal; /* Make the list itself less bold */
+    word-break: break-all;
+    display: block; /* Ensure it takes up its own line */
+    margin-top: 5px;
+}
+.confirm-sale-btn {
+    background-color: var(--color-seat-selected);
+    color: var(--color-background);
+    border: none;
+    padding: 15px 30px; /* Make button larger */
+    border-radius: 10px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: background-color 0.2s;
+    font-family: 'Cinzel', serif;
+}
+.confirm-sale-btn:hover {
+    background-color: #8efffd;
+}
