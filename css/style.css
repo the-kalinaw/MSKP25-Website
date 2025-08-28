@@ -3,15 +3,16 @@
    ======================================================
    1. THEME & GLOBAL VARIABLES (:root)
    2. GENERAL PAGE LAYOUT & UTILITIES
-   3. COMPONENT: LOGIN MODAL       
-   4. COMPONENT: CONFIRMATION MODAL     
-   5. COMPONENT: DASHBOARD  
-   6. COMPONENT: STAGE
-   7. COMPONENT: LEGEND
-   8. COMPONENT: SEATING CHART
-   9. COMPONENT: SEAT
-   10. COMPONENT: SUMMARY & BUTTON
-   11. RESPONSIVE DESIGN
+   3. LOGIN MODAL       
+   4. CONFIRMATION MODAL
+   5. VIEW SALE MODAL     
+   6. DASHBOARD  
+   7. COMPONENT: STAGE
+   8. COMPONENT: LEGEND
+   9. COMPONENT: SEATING CHART
+   10. COMPONENT: SEAT
+   11. COMPONENT: SUMMARY & BUTTON
+   12. RESPONSIVE DESIGN
    ====================================================== */
 
 
@@ -190,7 +191,72 @@ body {
 }
 
 /* ====================================================== */
-/* 5. COMPONENT: DASHBOARD                                */
+/* 5. COMPONENT: VIEW SALE MODAL                          */
+/* ====================================================== */
+
+#view-sale-modal .modal-content {
+    max-width: 40%;
+}
+
+.sale-details-grid {
+    margin-top: 20px;
+    display: grid;
+    /* Create a two-column grid for details */
+    grid-template-columns: auto auto;
+    gap: 15px 45px; /* Row and column gap */
+    align-items: center;
+}
+.sale-details-grid strong {
+    text-align: left;
+    font-family: 'Cinzel', serif;
+    opacity: 0.8;
+}
+.sale-details-grid span {
+    text-align: center;
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    word-break: break-all; /* Allow long text to wrap */
+}
+
+/* --- Edit Sale Form Styles --- */
+#edit-sale-form {
+    width: 100%;
+}
+
+.sale-details-grid input[type="text"],
+.sale-details-grid input[type="number"] {
+    /* Reuse styles from our login form for consistency */
+    width: 100%;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #555;
+    background-color: #3d3d49;
+    color: var(--color-text);
+    font-size: 0.9rem;
+    box-sizing: border-box;
+}
+
+.sale-details-grid input:disabled {
+    background-color: #2c2b3a;
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.static-detail {
+    background-color: #3d3d49;
+    padding: 8px;
+    border-radius: 5px;
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    word-break: break-all;
+}
+
+.modal-buttons {
+    margin-top: 25px;
+}
+
+/* ====================================================== */
+/* 6. COMPONENT: DASHBOARD                                */
 /* ====================================================== */
 .dashboard-container {
     display: flex;
@@ -292,9 +358,37 @@ td {
     border-radius: 10px;
 }
 
+/* --- Action Button Styles (in table) --- */
+.view-sale-btn,
+.delete-sale-btn {
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: all 0.2s ease-out;
+}
+
+.view-sale-btn {
+    background-color: var(--color-seat-pilak);
+    color: var(--color-background);
+}
+.view-sale-btn:hover {
+    opacity: 0.8;
+}
+
+.delete-sale-btn {
+    background-color: var(--color-seat-sold);
+    color: var(--color-text);
+}
+.delete-sale-btn:hover {
+    background-color: #ff5757; /* Brighter red on hover */
+}
 
 /* ====================================================== */
-/* 6. COMPONENT: STAGE                                    */
+/* 7. COMPONENT: STAGE                                    */
 /* ====================================================== */
 .stage {
     background-color: var(--color-stage);
@@ -316,7 +410,7 @@ td {
 
 
 /* ====================================================== */
-/* 7. COMPONENT: LEGEND                                   */
+/* 8. COMPONENT: LEGEND                                   */
 /* ====================================================== */
 .legend {
     display: flex;
@@ -348,7 +442,7 @@ td {
 .legend .seat.intermediate { background-color: var(--color-seat-kids); }
 
 /* ====================================================== */
-/* 8. COMPONENT: SEATING CHART                            */
+/* 9. COMPONENT: SEATING CHART                            */
 /* ====================================================== */
 
 .seating-chart {
@@ -375,7 +469,7 @@ td {
 
 
 /* ====================================================== */
-/* 9. COMPONENT: SEAT                                     */
+/* 10. COMPONENT: SEAT                                     */
 /* ====================================================== */
 .seat {
     /* --- NEW SHAPE & SIZE --- */
@@ -430,7 +524,7 @@ td {
 }
 
 /* ====================================================== */
-/* 10. COMPONENT: SUMMARY & BUTTON                         */
+/* 11. COMPONENT: SUMMARY & BUTTON                         */
 /* ====================================================== */
 .summary {
     text-align: center;
@@ -511,7 +605,7 @@ td {
 }
 
 /* ====================================================== */
-/* 11. RESPONSIVE DESIGN                                   */
+/* 12. RESPONSIVE DESIGN                                   */
 /* ====================================================== */
 
 /* --- For Tablets (max-width: 768px) --- */
