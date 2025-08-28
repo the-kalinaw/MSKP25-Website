@@ -38,10 +38,25 @@
         </div>
     </div>
 
+    <div id="sale-confirmation-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <button id="close-confirmation-btn" class="close-modal-btn">&times;</button>
+            <h2> Confirmed sale!</h2>
+            <div class="confirmation-details">
+                <!-- The JS will populate the number of seats here -->
+                <p>Successfully sold <strong id="conf-seat-count">0</strong> seat(s):</p>
+                <!-- The JS will populate the list of seat IDs here -->
+                <p id="conf-seat-list"></p>
+            </div>
+        </div>
+    </div>
+
     <main id="app-container" class="hidden">
         <div class="booking-container">
             <!-- Main page title -->
             <img class="main-logo" src="assets/musikapwa-title.png" alt="MusiKapwa Official Title Logo">
+
+            <a href="dashboard.html" class="nav-link">Go to Sales Dashboard &rarr;</a>
 
             <!-- The legend explains the meaning of different seat colors and states -->
             <div class="legend">
@@ -96,8 +111,10 @@
                 <!-- The 'total' span will be updated by JavaScript to show the total price -->
                 <p>Total Price: Php<span id="total">0</span></p>
 
-                <!-- The button for the moderator to finalize the transaction -->
-                <button class="confirm-sale-btn">Confirm Sale</button>
+                <div class="summary-buttons">
+                    <button id="clear-selection-btn" class="secondary-btn">Clear Selection</button>
+                    <button class="confirm-sale-btn">Confirm Sale</button>
+                </div>
             </div>
         </div>
     </main>
