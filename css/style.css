@@ -3,12 +3,15 @@
    ======================================================
    1. THEME & GLOBAL VARIABLES (:root)
    2. GENERAL PAGE LAYOUT & UTILITIES
-   3. COMPONENT: LOGIN MODAL              
-   4. COMPONENT: STAGE
-   5. COMPONENT: LEGEND
-   6. COMPONENT: SEATING CHART
-   7. COMPONENT: SEAT
-   8. COMPONENT: SUMMARY & BUTTON
+   3. COMPONENT: LOGIN MODAL       
+   4. COMPONENT: CONFIRMATION MODAL     
+   5. COMPONENT: DASHBOARD  
+   6. COMPONENT: STAGE
+   7. COMPONENT: LEGEND
+   8. COMPONENT: SEATING CHART
+   9. COMPONENT: SEAT
+   10. COMPONENT: SUMMARY & BUTTON
+   11. RESPONSIVE DESIGN
    ====================================================== */
 
 
@@ -63,6 +66,19 @@ body {
     margin-bottom: 20px;
 }
 
+.nav-link {
+    color: var(--color-seat-selected);
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    transition: all 0.2s ease-out;
+}
+.nav-link:hover {
+    color: #8efffd; /* Lighter teal on hover */
+    text-decoration: underline;
+}
+
 /* ====================================================== */
 /* 3. COMPONENT: LOGIN MODAL                              */
 /* ====================================================== */
@@ -86,6 +102,7 @@ body {
     width: 90%;
     max-width: 400px;
     text-align: center;
+    position: relative;
 }
 .modal-content h2 {
     margin-top: 0;
@@ -126,9 +143,158 @@ body {
     background-color: #8efffd;
 }
 
+/* ====================================================== */
+/* 4. COMPONENT: CONFIRMATION MODAL                       */
+/* ====================================================== */
+
+.close-modal-btn {
+    /* Position the button absolutely within its 'relative' parent */
+    position: absolute;
+    top: 10px;
+    right: 15px;
+
+    /* Remove default button appearance */
+    background: transparent;
+    border: none;
+    
+    /* Style the 'x' text */
+    font-size: 2rem; /* Make the 'x' larger */
+    font-weight: bold;
+    color: var(--color-text);
+    line-height: 1; /* Ensure tight vertical alignment */
+    
+    /* Make it feel interactive */
+    cursor: pointer;
+    opacity: 0.7;
+    transition: all 0.2s ease-out;
+}
+.close-modal-btn:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.confirmation-details {
+    margin-top: 15px;
+    text-align: center;
+}
+.confirmation-details p {
+    margin: 5px 0;
+    font-size: 1.1rem;
+    color: var(--color-text);
+}
+#conf-seat-list {
+    font-weight: bold;
+    color: var(--color-seat-selected); /* Use the highlight color for the list */
+    font-size: 1.2rem;
+    word-break: break-all;
+}
 
 /* ====================================================== */
-/* 4. COMPONENT: STAGE                                    */
+/* 5. COMPONENT: DASHBOARD                                */
+/* ====================================================== */
+.dashboard-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding: 0 20px;
+    box-sizing: border-box;
+}
+
+.dashboard-header {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.dashboard-module {
+    background-color: var(--color-stage);
+    border-radius: 15px;
+    padding: 20px 30px;
+    width: 100%;
+    max-width: 1200px;
+    margin-bottom: 30px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+.dashboard-module h2 {
+    margin-top: 0;
+    border-bottom: 1px solid rgba(240, 230, 210, 0.2);
+    padding-bottom: 10px;
+}
+
+/* --- KPI Grid Styles --- */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+.kpi-card {
+    background-color: var(--color-background);
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+}
+.kpi-card h3 {
+    margin-top: 0;
+    font-size: 1.2rem;
+    opacity: 0.8;
+}
+.kpi-card p {
+    margin-bottom: 0;
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--color-seat-selected);
+}
+
+/* --- Table Styles (for both Category and Sales Log) --- */
+.category-summary, .sales-log-container {
+    width: 100%;
+    overflow-x: auto; /* Allow tables to be scrolled on small screens */
+}
+table {
+    width: 100%;
+    border-collapse: collapse; /* Clean, modern table borders */
+    margin-top: 15px;
+}
+th, td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid rgba(240, 230, 210, 0.2);
+}
+th {
+    font-size: 1.1rem;
+    color: var(--color-text);
+}
+td {
+    font-family: Arial, sans-serif; /* Use a more standard font for data */
+    font-size: 0.9rem;
+}
+
+/* --- VIP Management Styles --- */
+.vip-management-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr; /* Make the form wider than the availability list */
+    gap: 30px;
+}
+.vip-availability h3 {
+    margin-top: 0;
+}
+.vip-availability p {
+    font-size: 1.1rem;
+}
+.vip-availability strong {
+    color: var(--color-seat-selected);
+}
+.vip-form {
+    background-color: var(--color-background);
+    padding: 20px;
+    border-radius: 10px;
+}
+
+
+/* ====================================================== */
+/* 6. COMPONENT: STAGE                                    */
 /* ====================================================== */
 .stage {
     background-color: var(--color-stage);
@@ -150,7 +316,7 @@ body {
 
 
 /* ====================================================== */
-/* 5. COMPONENT: LEGEND                                   */
+/* 7. COMPONENT: LEGEND                                   */
 /* ====================================================== */
 .legend {
     display: flex;
@@ -182,12 +348,13 @@ body {
 .legend .seat.intermediate { background-color: var(--color-seat-kids); }
 
 /* ====================================================== */
-/* 6. COMPONENT: SEATING CHART                            */
+/* 8. COMPONENT: SEATING CHART                            */
 /* ====================================================== */
+
 .seating-chart {
     perspective: 1000px;
     margin-bottom: 30px;
-    width: auto;
+    width: 100%;
     max-width: 95%;
     overflow-x: auto; 
     padding: 10px;
@@ -200,7 +367,7 @@ body {
 .spacer {
     background-color: transparent;
     border: none;
-    width: 25px;
+    width: 23px;
     height: 20px;
     margin: 4px;
     flex-shrink: 0;
@@ -208,11 +375,11 @@ body {
 
 
 /* ====================================================== */
-/* 7. COMPONENT: SEAT                                     */
+/* 9. COMPONENT: SEAT                                     */
 /* ====================================================== */
 .seat {
     /* --- NEW SHAPE & SIZE --- */
-    width: 25px;
+    width: 23px;
     height: 20px;
     margin: 4px;
     border-radius: 8px; /* This creates the new rounded rectangle shape */
@@ -222,7 +389,7 @@ body {
     display: flex; /* Using flexbox for perfect text centering */
     align-items: center;
     justify-content: center;
-    font-size: 0.5rem;
+    font-size: 0.45rem;
     font-weight: bold;
     font-family: Verdana, sans-serif; /* Your choice for readability */
     color: #000;
@@ -249,11 +416,11 @@ body {
 }
 
 /* --- Seat Category Colors (Available) --- */
-.seat.available.seat-vip { background-color: var(--color-seat-vip); }
+.seat.available.seat-vip { background-color: var(--color-seat-vip); cursor: not-allowed; pointer-events: none;}
 .seat.available.seat-ginto { background-color: var(--color-seat-ginto); }
 .seat.available.seat-pilak { background-color: var(--color-seat-pilak); }
 .seat.available.seat-tanso { background-color: var(--color-seat-tanso); }
-.seat.available.seat-intermediate { background-color: var(--color-seat-kids); }
+.seat.available.seat-intermediate { background-color: var(--color-seat-kids); cursor: not-allowed; pointer-events: none;}
 
 /* --- Selected State (Put here to override available state colors) --- */
 .seat.available.selected {
@@ -262,27 +429,23 @@ body {
     box-shadow: 0 0 10px var(--color-seat-selected); /* Add a glow when selected */
 }
 
-/* --- Seat Category Colors (Sold Overrides) --- */
-/*.seat.sold.seat-intermediate { 
-    background-color: var(--color-seat-kids); 
-}
-/* You can add more overrides here if needed, e.g. .seat.sold.seat-vip */
-
-
 /* ====================================================== */
-/* 8. COMPONENT: SUMMARY & BUTTON                         */
+/* 10. COMPONENT: SUMMARY & BUTTON                         */
 /* ====================================================== */
 .summary {
     text-align: center;
-    margin-top: 30px;
+    margin-top: 10px;
     background-color: var(--color-stage); /* Match the stage color for consistency */
-    padding: 20px 30px;
+    padding-top: 10px;
+    padding-bottom: 20px;
     border-radius: 15px; /* Match the stage rounding */
     width: 90%;
     max-width: 700px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); /* Match the stage shadow */
+    margin-bottom: 30px;
 }
 .summary p {
+    padding-right: 20px;
     margin: 10px 0;
     font-size: 1.2rem; /* Slightly larger text */
 }
@@ -302,19 +465,193 @@ body {
     display: block; /* Ensure it takes up its own line */
     margin-top: 5px;
 }
-.confirm-sale-btn {
-    background-color: var(--color-seat-selected);
-    color: var(--color-background);
+
+/* Container for both buttons to align them side by side */
+.summary-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px; /* Space between the buttons */
+    margin-top: 20px;
+    flex-wrap: wrap; /* Allow buttons to wrap on very small screens */
+}
+
+/* Base styles for both buttons */
+.confirm-sale-btn,
+.secondary-btn {
     border: none;
-    padding: 15px 30px; /* Make button larger */
+    padding: 15px 30px;
     border-radius: 10px;
     font-size: 1.2rem;
     font-weight: bold;
     cursor: pointer;
-    margin-top: 20px;
-    transition: background-color 0.2s;
+    transition: all 0.2s;
     font-family: 'Cinzel', serif;
+}
+
+/* Primary button style */
+.confirm-sale-btn {
+    background-color: var(--color-seat-selected);
+    color: var(--color-background);
 }
 .confirm-sale-btn:hover {
     background-color: #8efffd;
+}
+
+/* New secondary button style */
+.secondary-btn {
+    background-color: transparent;
+    color: var(--color-seat-selected);
+    /* Create a border using the same color */
+    border: 2px solid var(--color-seat-selected);
+}
+.secondary-btn:hover {
+    background-color: rgba(52, 209, 191, 0.1); /* A faint teal glow on hover */
+    color: #8efffd;
+    border-color: #8efffd;
+}
+
+/* ====================================================== */
+/* 11. RESPONSIVE DESIGN                                   */
+/* ====================================================== */
+
+/* --- For Tablets (max-width: 768px) --- */
+@media (max-width: 768px) {
+    body {
+        padding-top: 20px;
+    }
+
+    .main-logo {
+        max-width: 30%;
+    }
+
+    .stage {
+        margin-top: -10px;
+        height: 45px; /* was 50px */
+        font-size: 1.3rem; /* was 1.5rem */
+        max-width: 400px;
+        margin-bottom: 5px;
+    }
+
+    .legend {
+        gap: 15px; /* was 20px */
+        font-size: 0.9rem;
+        flex-wrap: wrap; /* Allow wrapping on smaller tablets */
+    }
+
+    .legend-item {
+        font-size: 0.5rem;
+        gap: 5px
+    }
+
+    .legend .seat {
+        height: 15px;
+        width: 15px;
+    }
+
+    .seating-chart {
+        margin-left: 30%;
+    }
+
+    /* Make seats and spacers proportionally smaller */
+    .seat, .spacer {
+        width: 19px; /* was 23px */
+        height: 14px; /* was 20px */
+        margin: 3px;
+        font-size: 0.4rem; /* was 0.45rem */
+    }
+
+    .summary {
+        padding: 15px 25px;
+        width: 40%;
+    }
+    .summary p {
+        font-size: 1.1rem;
+    }
+    .confirm-sale-btn, .secondary-btn {
+        padding: 12px 25px;
+        font-size: 1.1rem;
+    }
+}
+
+    .modal-content {
+        padding: 25px 30px;
+    }
+
+/* --- For Phones (max-width: 480px) --- */
+@media (max-width: 480px) {
+    body {
+        padding-top: 15px;
+    }
+
+    .main-logo {
+        max-width: 20%;
+        margin-bottom: 15px;
+    }
+
+    .stage {
+        margin-top: -10px;
+        width: 30%;
+        height: 40px;
+        font-size: 1.1rem;
+        letter-spacing: 3px;
+    }
+
+    .legend {
+        gap: 5px 10px; /* vertical and horizontal gap */
+    }
+    .legend-item {
+        font-size: 0.4rem;
+        gap: 3px
+    }
+
+    .legend .seat {
+        height: 10px;
+        width: 10px;
+    }
+
+    .seating-chart {
+        margin-left: 50%;
+    }
+
+    /* Make seats small but still tappable */
+    .seat, .spacer {
+        width: 16px; /* was 23px on desktop */
+        height: 11px; /* was 20px on desktop */
+        margin: 2px;
+        border-radius: 4px;
+        font-size: 0.35rem; /* Text will be very small */
+    }
+    
+    .summary {
+        margin-top: -10px;
+        width: 40%;
+        padding: 15px;
+    }
+    .summary p {
+        font-size: 1rem;
+    }
+    #selected-seats-container {
+        font-size: 0.9rem;
+    }
+    .confirm-sale-btn, .secondary-btn {
+        width: 100%; /* Make button full-width for easy tapping */
+        padding: 12px 20px;
+        font-size: 1rem;
+    }
+
+    .modal-content {
+        width: 80%;
+        padding: 20px; /* More compact padding */
+    }
+    .modal-content h2 {
+        font-size: 1.5rem; /* Slightly smaller title */
+    }
+    .form-group {
+        margin-bottom: 15px; /* Tighter spacing */
+    }
+    .login-btn {
+        padding: 10px;
+        font-size: 1rem;
+    }
+
 }
