@@ -4,7 +4,7 @@
 //          IMPORTS
 // ======================================================
 import { db } from './firebase-init.js'; 
-import { collection, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { collection, onSnapshot, query, orderBy, doc, writeBatch, serverTimestamp, increment } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { seatConfiguration } from './config.js'; // We need the totals from config
 import * as ui from './ui.js';
 import * as firebase from './firebaseService.js';
