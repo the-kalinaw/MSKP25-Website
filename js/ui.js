@@ -167,12 +167,8 @@ export function hideConfirmationModal(modal) {
  * @param {object} kpiData - The calculated data for revenue, sales, and categories.
  * @param {object} elements - The DOM elements to update.
  */
-export function updateKpiSummary(kpiData, elements) {
-    const { totalRevenueEl, totalTicketsSoldEl, categorySummaryTableBodyEl } = elements;
-
-    // Update the main KPI cards
-    totalRevenueEl.innerText = `Php ${kpiData.totalRevenue.toLocaleString()}`;
-    totalTicketsSoldEl.innerText = kpiData.totalTicketsSold;
+export function updateCategorySummary(kpiData, elements) {
+    const { categorySummaryTableBodyEl } = elements;
 
     // Clear the existing table body
     categorySummaryTableBodyEl.innerHTML = '';
@@ -198,36 +194,41 @@ export function updateKpiSummary(kpiData, elements) {
  * @param {Array<object>} sales - An array of sale objects from Firestore.
  * @param {HTMLElement} tableBodyEl - The tbody element of the sales log table.
  */
-export function updateSalesLog(sales, tableBodyEl) {
+export function updateSalesLog(transactions, tableBodyEl) {
     // Clear the existing table to prevent duplicates
     tableBodyEl.innerHTML = '';
 
     // Check if there are any sales
-    if (sales.length === 0) {
+    if (transactions.length === 0) {
         const row = document.createElement('tr');
-        row.innerHTML = `<td colspan="6">No sales recorded yet.</td>`;
+        row.innerHTML = `<td colspan="7">No sales or reservations recorded yet.</td>`;
         tableBodyEl.appendChild(row);
         return;
     }
 
     // Create and append a new row for each sale
-    sales.forEach(sale => {
+    transactions.forEach(transaction => {
         const row = document.createElement('tr');
         
-        // Format the timestamp to a more readable local string
-        const timestamp = sale.saleTimestamp.toDate().toLocaleString();
-        
-        // Join the array of seat IDs into a single string
-        const seats = sale.seats.join(', ');
+        const timestamp = transaction.saleTimestamp ? transaction.saleTimestamp.toDate().toLocaleString() : 'N/A';
+        const seats = transaction.seats ? transaction.seats.join(', ') : 'N/A';
+        const price = transaction.totalPrice.toLocaleString();
 
         row.innerHTML = `
-            <td>${sale.id}</td>
+            <td>${transaction.id}</td>
             <td>${timestamp}</td>
-            <td>${sale.moderatorBooth}</td>
-            <td>${sale.moderatorName}</td>
+            <td>${transaction.moderatorBooth}</td>
+            <td>${transaction.moderatorName}</td>
             <td>${seats}</td>
-            <td>Php ${sale.totalPrice.toLocaleString()}</td>
+            <td>Php ${price}</td>
+            <td>
+                <button class="view-sale-btn" data-sale-id="${transaction.id}">Edit</button>
+                <button class="delete-sale-btn" data-sale-id="${transaction.id}">Delete</button>
+            </td>
         `;
+        if (transaction.type === 'Sponsorship') {
+            row.classList.add('sponsorship-row');
+        }
         tableBodyEl.appendChild(row);
     });
 }
@@ -280,3 +281,61 @@ export function clearVipForm(formElement) {
     formElement.reset();
 }
 
+/**
+ * Populates and displays the "View Sale" modal with transaction details.
+ * @param {object} sale - The full data object for the selected sale.
+ * @param {object} elements - An object containing the modal's DOM elements.
+ */
+export function displaySaleDetails(sale, elements) {
+    const { modal, detailsContainer } = elements;
+
+    // Determine the type of transaction
+    const isSponsorship = sale.type === 'Sponsorship';
+
+    // Format data for display and editing
+    const timestamp = sale.saleTimestamp ? sale.saleTimestamp.toDate().toLocaleString() : 'N/A';
+    const seats = sale.seats ? sale.seats.join(', ') : 'N/A';
+    
+    // --- NEW: Generate an editable form instead of static text ---
+    detailsContainer.innerHTML = `
+        <form id="edit-sale-form" data-sale-id="${sale.id}" data-sale-type="${sale.type}">
+            <div class="sale-details-grid">
+                <strong>Sale ID:</strong>
+                <span class="static-detail">${sale.id}</span>
+
+                <strong>Timestamp:</strong>
+                <span class="static-detail">${timestamp}</span>
+
+                <strong>Type:</strong>
+                <span class="static-detail">${sale.type}</span>
+
+                <strong>${isSponsorship ? 'Package:' : 'Booth:'}</strong>
+                <input type="text" id="edit-booth" value="${isSponsorship ? sale.packageName : sale.moderatorBooth}" ${isSponsorship ? 'disabled' : ''}>
+
+                <strong>${isSponsorship ? 'Sponsor Name:' : 'Moderator:'}</strong>
+                <input type="text" id="edit-moderator-name" value="${sale.moderatorName}" required>
+
+                <strong>Seats:</strong>
+                <span class="static-detail">${seats}</span>
+
+                <strong>${isSponsorship ? 'Donation:' : 'Total Price:'}</strong>
+                <input type="number" id="edit-total-price" value="${sale.totalPrice}" required>
+            </div>
+
+            <div class="summary-buttons modal-buttons">
+                <button type="submit" class="confirm-sale-btn">Save Changes</button>
+            </div>
+        </form>
+    `;
+
+    // Make the modal visible
+    modal.classList.remove('hidden');
+}
+
+/**
+ * Hides the "View Sale" modal.
+ * @param {HTMLElement} modal - The modal element to hide.
+ */
+export function hideViewSaleModal(modal) {
+    modal.classList.add('hidden');
+}

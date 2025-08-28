@@ -75,34 +75,64 @@ export async function confirmSaleInFirebase(db, transactionData, writeBatch, doc
 }
 
 /**
- * Sets up a real-time listener on the 'sales' collection.
- * It orders the sales by timestamp to show the most recent first.
+ * Sets up listeners on BOTH 'sales' and 'sponsorshipReservations' collections.
+ * It merges and sorts the results to create a single, chronological transaction log.
  *
  * @param {object} db - The Firestore database instance.
- * @param {object} fns - An object containing Firestore functions (collection, onSnapshot, query, orderBy).
- * @param {function} handleSalesUpdate - A callback function to run when sales data changes.
+ * @param {object} fns - An object containing Firestore functions.
+ * @param {function} handleUpdate - The callback to run with the unified list.
  */
-export function listenForSalesChanges(db, fns, handleSalesUpdate) {
+export function listenForAllTransactions(db, fns, handleUpdate) {
     const { collection, onSnapshot, query, orderBy } = fns;
-    
-    // Create a query to get all documents from the 'sales' collection,
-    // ordered by the saleTimestamp field in descending order (newest first).
-    const salesQuery = query(collection(db, "sales"), orderBy("saleTimestamp", "desc"));
 
-    const unsubscribe = onSnapshot(salesQuery, (querySnapshot) => {
-        const sales = [];
-        querySnapshot.forEach(doc => {
-            sales.push({
-                id: doc.id,
-                ...doc.data()
-            });
+    let sales = [];
+    let reservations = [];
+
+    const mergeAndSort = () => {
+        // Format regular sales
+        const typedSales = sales.map(s => ({
+            ...s,
+            type: 'Ticket Sale'
+        }));
+
+        // Format reservations to match the sales structure
+        const typedReservations = reservations.map(r => {
+            const data = r.data();
+            return {
+                id: r.id,
+                type: 'Sponsorship',
+                moderatorBooth: 'N/A',
+                moderatorName: data.sponsorName,
+                seats: data.assignedSeats,
+                totalPrice: data.donationAmount,
+                saleTimestamp: data.reservationTimestamp,
+                packageName: data.packageName
+            };
         });
         
-        // Pass the array of sales to the callback function
-        handleSalesUpdate(sales);
+        const allTransactions = [...typedSales, ...typedReservations];
+        // Sort all transactions together by their timestamp
+        allTransactions.sort((a, b) => {
+            if (!a.saleTimestamp || !b.saleTimestamp) return 0;
+            return b.saleTimestamp.toDate() - a.saleTimestamp.toDate();
+        });
+        
+        handleUpdate(allTransactions);
+    };
+
+    // Listener for 'sales' collection
+    const salesQuery = query(collection(db, "sales"), orderBy("saleTimestamp", "desc"));
+    onSnapshot(salesQuery, (snapshot) => {
+        sales = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        mergeAndSort();
     });
 
-    return unsubscribe;
+    // Listener for 'sponsorshipReservations' collection
+    const reservationsQuery = query(collection(db, "sponsorshipReservations"), orderBy("reservationTimestamp", "desc"));
+    onSnapshot(reservationsQuery, (snapshot) => {
+        reservations = snapshot.docs.map(doc => ({ id: doc.id, data: () => doc.data() }));
+        mergeAndSort();
+    });
 }
 
 /**
@@ -181,4 +211,69 @@ export async function reserveSponsorshipPackage(db, fns, reservationData) {
     // 5. Execute all commands
     await batch.commit();
     console.log(`Successfully created reservation ${newReservationRef.id}`);
+}
+
+/**
+ * Updates the details of a specific sale or reservation document in Firestore.
+ * @param {object} db - The Firestore database instance.
+ * @param {object} fns - An object containing Firestore functions (doc, updateDoc).
+ * @param {string} saleId - The ID of the document to update.
+ * @param {string} saleType - The type of sale ('Ticket Sale' or 'Sponsorship').
+ * @param {object} updatedData - An object containing the fields to update.
+ */
+export async function updateSaleDetails(db, fns, saleId, saleType, updatedData) {
+    const { doc, updateDoc } = fns;
+
+    // Determine which collection the document lives in
+    const collectionName = saleType === 'Sponsorship' ? 'sponsorshipReservations' : 'sales';
+    const docRef = doc(db, collectionName, saleId);
+
+    // Perform the update
+    await updateDoc(docRef, updatedData);
+    console.log(`Successfully updated document: ${saleId}`);
+}
+
+/**
+ * Voids a transaction by deleting the sale record and resetting the seats.
+ * If it's a sponsorship, it also increments the available slots.
+ * @param {object} db - The Firestore database instance.
+ * @param {object} fns - An object containing Firestore functions.
+ * @param {object} saleData - The full data object for the sale to be voided.
+ */
+export async function voidSaleTransaction(db, fns, saleData) {
+    const { collection, doc, writeBatch, increment } = fns;
+
+    const batch = writeBatch(db);
+
+    // 1. Determine the collection and document to be deleted
+    const isSponsorship = saleData.type === 'Sponsorship';
+    const collectionName = isSponsorship ? 'sponsorshipReservations' : 'sales';
+    const saleDocRef = doc(db, collectionName, saleData.id);
+
+    // Command 1: Delete the sale/reservation document
+    batch.delete(saleDocRef);
+
+    // 2. Reset all associated seats
+    if (saleData.seats && saleData.seats.length > 0) {
+        saleData.seats.forEach(seatId => {
+            const seatDocRef = doc(db, 'seats', seatId);
+            // Command to update each seat: set status to available and remove saleId link
+            batch.update(seatDocRef, {
+                status: 'available',
+                saleId: null, // Or use deleteField() for complete removal
+                reservationId: null
+            });
+        });
+    }
+
+    // 3. If it was a sponsorship, restore the available slot count
+    if (isSponsorship && saleData.packageId) {
+        const packageDocRef = doc(db, 'sponsorships', saleData.packageId);
+        // Command to increment the slotsRemaining field by 1
+        batch.update(packageDocRef, { slotsRemaining: increment(1) });
+    }
+
+    // 4. Execute all commands in the batch
+    await batch.commit();
+    console.log(`Transaction ${saleData.id} successfully voided.`);
 }
