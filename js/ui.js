@@ -137,3 +137,146 @@ export function updateSummary(seatingChart, countElement, totalElement, selected
     countElement.innerText = count;
     totalElement.innerText = total;
 }
+
+/**
+ * Displays the sale confirmation modal with the details of the sale.
+ * @param {object} saleDetails - An object containing the sold seats' IDs.
+ * @param {object} elements - An object containing the modal DOM elements.
+ */
+export function showConfirmationModal(saleDetails, elements) {
+    const { modal, countElement, listElement } = elements;
+
+    // Populate the modal with the correct data from the sale
+    countElement.innerText = saleDetails.seats.length;
+    listElement.innerText = saleDetails.seats.join(', ');
+
+    // Make the modal visible
+    modal.classList.remove('hidden');
+}
+
+/**
+ * Hides the sale confirmation modal.
+ * @param {HTMLElement} modal - The modal element to hide.
+ */
+export function hideConfirmationModal(modal) {
+    modal.classList.add('hidden');
+}
+
+/**
+ * Updates the entire KPI summary module on the dashboard.
+ * @param {object} kpiData - The calculated data for revenue, sales, and categories.
+ * @param {object} elements - The DOM elements to update.
+ */
+export function updateKpiSummary(kpiData, elements) {
+    const { totalRevenueEl, totalTicketsSoldEl, categorySummaryTableBodyEl } = elements;
+
+    // Update the main KPI cards
+    totalRevenueEl.innerText = `Php ${kpiData.totalRevenue.toLocaleString()}`;
+    totalTicketsSoldEl.innerText = kpiData.totalTicketsSold;
+
+    // Clear the existing table body
+    categorySummaryTableBodyEl.innerHTML = '';
+
+    // Create and append a new row for each category
+    for (const categoryName in kpiData.categoryStats) {
+        const stats = kpiData.categoryStats[categoryName];
+        const remaining = stats.total - stats.sold;
+
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${categoryName}</td>
+            <td>${stats.sold}</td>
+            <td>${remaining}</td>
+            <td>${stats.total}</td>
+        `;
+        categorySummaryTableBodyEl.appendChild(row);
+    }
+}
+
+/**
+ * Renders the detailed sales log table on the dashboard.
+ * @param {Array<object>} sales - An array of sale objects from Firestore.
+ * @param {HTMLElement} tableBodyEl - The tbody element of the sales log table.
+ */
+export function updateSalesLog(sales, tableBodyEl) {
+    // Clear the existing table to prevent duplicates
+    tableBodyEl.innerHTML = '';
+
+    // Check if there are any sales
+    if (sales.length === 0) {
+        const row = document.createElement('tr');
+        row.innerHTML = `<td colspan="6">No sales recorded yet.</td>`;
+        tableBodyEl.appendChild(row);
+        return;
+    }
+
+    // Create and append a new row for each sale
+    sales.forEach(sale => {
+        const row = document.createElement('tr');
+        
+        // Format the timestamp to a more readable local string
+        const timestamp = sale.saleTimestamp.toDate().toLocaleString();
+        
+        // Join the array of seat IDs into a single string
+        const seats = sale.seats.join(', ');
+
+        row.innerHTML = `
+            <td>${sale.id}</td>
+            <td>${timestamp}</td>
+            <td>${sale.moderatorBooth}</td>
+            <td>${sale.moderatorName}</td>
+            <td>${seats}</td>
+            <td>Php ${sale.totalPrice.toLocaleString()}</td>
+        `;
+        tableBodyEl.appendChild(row);
+    });
+}
+
+/**
+ * Updates the VIP sponsorship availability display on the dashboard.
+ * @param {Array<object>} packages - The array of sponsorship packages.
+ * @param {object} elements - The DOM elements for the slots display.
+ */
+export function updateSponsorshipAvailability(packages, elements) {
+    const { paglingapSlotsEl, makataoSlotsEl, kapwaSlotsEl } = elements;
+
+    packages.forEach(pkg => {
+        const displayText = `${pkg.slotsRemaining} / ${pkg.totalSlots} slots remaining`;
+
+        // Use a simple `if` or `switch` statement for a direct, reliable mapping
+        if (pkg.packageName === "Paglingap Package") {
+            paglingapSlotsEl.innerText = displayText;
+        } else if (pkg.packageName === "Makatao Package") {
+            makataoSlotsEl.innerText = displayText;
+        } else if (pkg.packageName === "Kapwa Package") {
+            kapwaSlotsEl.innerText = displayText;
+        }
+    });
+}
+
+/**
+ * Populates the dropdown select menu in the VIP reservation form.
+ * @param {Array<object>} packages - The array of sponsorship packages.
+ * @param {HTMLElement} selectElement - The <select> DOM element.
+ */
+export function populatePackageOptions(packages, selectElement) {
+    // Clear any existing options except the first "disabled" one
+    selectElement.innerHTML = '<option value="" disabled selected>-- Select Package --</option>';
+
+    packages.forEach(pkg => {
+        const option = document.createElement('option');
+        // The value will be the unique document ID, which we'll need for updates
+        option.value = pkg.id; 
+        option.innerText = `${pkg.packageName} - Php ${pkg.price}`;
+        selectElement.appendChild(option);
+    });
+}
+
+/**
+ * Clears the input fields of the VIP reservation form.
+ * @param {HTMLElement} formElement - The <form> DOM element.
+ */
+export function clearVipForm(formElement) {
+    formElement.reset();
+}
+

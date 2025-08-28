@@ -10,7 +10,7 @@ export const seatTypes = {
     'G': { price: 600, category: 'Ginto', status: 'available' },
     'P': { price: 500, category: 'Pilak', status: 'available' },
     'T': { price: 400, category: 'Tanso', status: 'available' },
-    'K': { price: 0, category: 'Intermediate/Primary', status: 'sold' }
+    'K': { price: 0, category: 'Intermediate/Primary', status: 'available' }
 };
 
 export const seatLayout = [
@@ -97,7 +97,7 @@ export const seatConfiguration = [
 
 // This function needs access to the Firestore `setDoc` and `collection` functions,
 
-export async function seedDatabaseWithSections() {
+export async function seedDatabaseWithSections(db, collection, doc, setDoc) {
     console.log("Starting to seed database FROM LAYOUT...");
     const seatsCollection = collection(db, "seats");
 
