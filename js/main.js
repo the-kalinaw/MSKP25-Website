@@ -130,9 +130,13 @@ function handleDataUpdate(newSeatsMap) {
     const fullConfig = { seatLayout, seatTypes, seatConfiguration };
     ui.renderSeats(seatingChart, seatsMap, fullConfig);
 
-    // --- NEW: Re-apply the user's current selection ---
-    // This ensures that if a re-render happens, the seats you have *currently*
-    // selected (but not yet confirmed) remain visually selected.
+    // --- NEW: SAVE TO SESSION CACHE ---
+    // Convert the Map to an array that can be stored as a string
+    const seatsArray = Array.from(newSeatsMap.entries());
+    sessionStorage.setItem('seatsCache', JSON.stringify(seatsArray));
+    console.log("Seat cache updated in Session Storage.");
+    // ---------------------------------
+
     userSelection.forEach(seatId => {
         const seatElement = seatingChart.querySelector(`[data-seat-id="${seatId}"]`);
         if (seatElement && seatElement.classList.contains('available')) {
@@ -167,15 +171,29 @@ function initializeLogin() {
 }
 
 async function loadSeatingChart() {
-    seatingChart.innerHTML = "<h1>Loading seats...</h1>";
+    const fullConfig = { seatLayout, seatTypes, seatConfiguration };
     
-    // --- SIMPLIFIED: No more simulation mode needed for this page ---
-    // The listener is efficient enough for development.
-    console.log("--- RUNNING IN LIVE MODE ---");
-    console.log("Setting up real-time listener...");
+    // --- NEW: HYBRID CACHING STRATEGY ---
+    const cachedData = sessionStorage.getItem('seatsCache');
 
-    // Call our new service to start listening for changes,
-    // and tell it to run 'handleDataUpdate' whenever a change occurs.
+    if (cachedData) {
+        // 1. If we have cached data, load it instantly.
+        console.log("Loading seats from Session Storage cache...");
+        const seatsArray = JSON.parse(cachedData);
+        seatsMap = new Map(seatsArray);
+        ui.renderSeats(seatingChart, seatsMap, fullConfig);
+        userSelection.clear(); // Clear any previous selections on a cached load
+        ui.updateSummary(seatingChart, countElement, totalElement, selectedSeatsListElement);
+
+    } else {
+        // 2. If no cache, show the loading message.
+        seatingChart.innerHTML = "<h1>Loading seats for the first time...</h1>";
+    }
+
+    // 3. In BOTH cases, start the real-time listener in the background.
+    // It will provide the initial data (if the cache was empty) OR
+    // it will provide any updates that happened since the cache was saved.
+    console.log("Setting up real-time listener...");
     firebase.listenForSeatChanges(db, collection, onSnapshot, handleDataUpdate);
     
     // Attach event listeners that only need to be set once
